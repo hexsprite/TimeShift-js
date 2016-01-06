@@ -8,7 +8,7 @@
 (function() {
 
 	var root = this;
-	var OriginalDate = root.Date;
+	var OriginalDate = Date;
 
 	var TimeShift;
 	if (typeof exports !== 'undefined') {
@@ -16,11 +16,11 @@
 	} else {
 		TimeShift = root.TimeShift = {};
 	}
-	
-	
+
+
 	var currentTime = undefined;
 	var timezoneOffset = new OriginalDate().getTimezoneOffset();
-	
+
 	function currentDate() {
 		if (currentTime) {
 			return new OriginalDate(currentTime);
@@ -28,7 +28,7 @@
 			return new OriginalDate();
 		}
 	}
-	
+
 
 	function realLocalToUtc(realLocal) {
 		return new OriginalDate(realLocal.getTime() - realLocal.getTimezoneOffset()*60*1000 + timezoneOffset*60*1000);
@@ -59,7 +59,7 @@
 		return zone + twoDigit(Math.floor(offset/60)) + twoDigit(offset%60);
 	}
 
-	
+
 	/**
 	 * Return the current time zone offset in minutes.  A value of -60 corresponds to GMT+1,
 	 * +60 to GTM-1.  Default value is from new Date().getTimezoneOffset().
@@ -67,7 +67,7 @@
 	TimeShift.getTimezoneOffset = function() {
 		return timezoneOffset;
 	}
-	
+
 	/**
 	 * Set the time zone offset in minutes.  -60 corresponds to GMT+1, +60 to GTM-1.
 	 * Changing this will affect the results also for previously created Date instances.
@@ -75,7 +75,7 @@
 	TimeShift.setTimezoneOffset = function(offset) {
 		timezoneOffset = offset;
 	}
-	
+
 	/**
 	 * Return the currently overridden time value as milliseconds after Jan 1 1970 in UTC time.
 	 * The default value is undefined, which indicates using the real current time.
@@ -91,13 +91,13 @@
 	TimeShift.setTime = function(time) {
 		currentTime = time;
 	}
-	
+
 	/**
 	 * Access to the original Date constructor.
 	 */
 	TimeShift.OriginalDate = OriginalDate;
 
-	
+
 	/**
 	 * Mock implementation of Date.
 	 */
@@ -141,7 +141,7 @@
 			break;
 		}
 	}
-	
+
 	TimeShift.Date.prototype.getDate = function() { return utcToLocal(this.utc).getUTCDate(); }
 	TimeShift.Date.prototype.getDay = function() { return utcToLocal(this.utc).getUTCDay(); }
 	TimeShift.Date.prototype.getFullYear = function() { return utcToLocal(this.utc).getUTCFullYear(); }
@@ -150,7 +150,7 @@
 	TimeShift.Date.prototype.getMinutes = function() { return utcToLocal(this.utc).getUTCMinutes(); }
 	TimeShift.Date.prototype.getMonth = function() { return utcToLocal(this.utc).getUTCMonth(); }
 	TimeShift.Date.prototype.getSeconds = function() { return utcToLocal(this.utc).getUTCSeconds(); }
-	
+
 	TimeShift.Date.prototype.getUTCDate = function() { return this.utc.getUTCDate(); }
 	TimeShift.Date.prototype.getUTCDay = function() { return this.utc.getUTCDay(); }
 	TimeShift.Date.prototype.getUTCFullYear = function() { return this.utc.getUTCFullYear(); }
@@ -159,7 +159,7 @@
 	TimeShift.Date.prototype.getUTCMinutes = function() { return this.utc.getUTCMinutes(); }
 	TimeShift.Date.prototype.getUTCMonth = function() { return this.utc.getUTCMonth(); }
 	TimeShift.Date.prototype.getUTCSeconds = function() { return this.utc.getUTCSeconds(); }
-	
+
 	TimeShift.Date.prototype.setDate = function() { var d = utcToLocal(this.utc); d.setUTCDate.apply(d, Array.prototype.slice.call(arguments, 0)); this.utc = localToUtc(d); }
 	TimeShift.Date.prototype.setFullYear = function() { var d = utcToLocal(this.utc); d.setUTCFullYear.apply(d, Array.prototype.slice.call(arguments, 0)); this.utc = localToUtc(d); }
 	TimeShift.Date.prototype.setHours = function() { var d = utcToLocal(this.utc); d.setUTCHours.apply(d, Array.prototype.slice.call(arguments, 0)); this.utc = localToUtc(d); }
@@ -167,7 +167,7 @@
 	TimeShift.Date.prototype.setMinutes = function() { var d = utcToLocal(this.utc); d.setUTCMinutes.apply(d, Array.prototype.slice.call(arguments, 0)); this.utc = localToUtc(d); }
 	TimeShift.Date.prototype.setMonth = function() { var d = utcToLocal(this.utc); d.setUTCMonth.apply(d, Array.prototype.slice.call(arguments, 0)); this.utc = localToUtc(d); }
 	TimeShift.Date.prototype.setSeconds = function() { var d = utcToLocal(this.utc); d.setUTCSeconds.apply(d, Array.prototype.slice.call(arguments, 0)); this.utc = localToUtc(d); }
-	
+
 	TimeShift.Date.prototype.setUTCDate = function() { this.utc.setUTCDate.apply(this.utc, Array.prototype.slice.call(arguments, 0)); }
 	TimeShift.Date.prototype.setUTCFullYear = function() { this.utc.setUTCFullYear.apply(this.utc, Array.prototype.slice.call(arguments, 0)); }
 	TimeShift.Date.prototype.setUTCHours = function() { this.utc.setUTCHours.apply(this.utc, Array.prototype.slice.call(arguments, 0)); }
@@ -175,19 +175,19 @@
 	TimeShift.Date.prototype.setUTCMinutes = function() { this.utc.setUTCMinutes.apply(this.utc, Array.prototype.slice.call(arguments, 0)); }
 	TimeShift.Date.prototype.setUTCMonth = function() { this.utc.setUTCMonth.apply(this.utc, Array.prototype.slice.call(arguments, 0)); }
 	TimeShift.Date.prototype.setUTCSeconds = function() { this.utc.setUTCSeconds.apply(this.utc, Array.prototype.slice.call(arguments, 0)); }
-	
+
 
 	TimeShift.Date.prototype.getYear = function() { return this.getFullYear() - 1900; }
 	TimeShift.Date.prototype.setYear = function(v) { this.setFullYear(v + 1900); }
-	
+
 	TimeShift.Date.prototype.getTime = function() { return this.utc.getTime(); }
 	TimeShift.Date.prototype.setTime = function(v) { this.utc.setTime(v); }
-	
+
 	TimeShift.Date.prototype.getTimezoneOffset = function() { return timezoneOffset; }
-	
+
 	TimeShift.Date.prototype.toDateString = function() { return utcToLocal(this.utc).toDateString(); }  // Wrong
 	TimeShift.Date.prototype.toLocaleDateString = function() { return utcToLocal(this.utc).toLocaleDateString(); }  // Wrong
-	
+
 	TimeShift.Date.prototype.toISOString = function() { return this.utc.toISOString(); }
 	TimeShift.Date.prototype.toGMTString = function() { return this.utc.toGMTString(); }
 	TimeShift.Date.prototype.toUTCString = function() { return this.utc.toUTCString(); }
@@ -212,7 +212,7 @@
 	TimeShift.Date.parse = OriginalDate.parse;  // Wrong
 	TimeShift.Date.UTC = OriginalDate.UTC;
 
-	
+
 	/**
 	 * Helper method that describes a Date object contents.
 	 */
